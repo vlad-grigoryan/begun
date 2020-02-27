@@ -18,31 +18,27 @@ import {
 import {Divider, Button} from 'react-native-elements';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import BackgroundGeolocation from 'react-native-background-geolocation';
+import haversine from 'haversine-distance';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {enabled: false};
+    this.timeInterval = 0;
+    this.state = {
+      initialCoord: null,
+      wholeDistance: 0,
+      passedTime: 0,
+      lastDistance: 0,
+      currentPace: 0,
+      avgPace: 0,
+      saveTime: 0,
+      startedRun: false,
+    };
   }
-  componentDidMount() {
-    // This handler fires whenever bgGeo receives a location update.
-    BackgroundGeolocation.onLocation(
-      location => {
-        console.log(location, 'location');
-      },
-      err => {
-        console.log(err, 'err');
-      },
-    );
 
-    // This handler fires when movement states changes (stationary->moving; moving->stationary)
+  componentDidMount() {
     BackgroundGeolocation.onMotionChange(location => {
       console.log(location, 'motion');
-    });
-
-    // This event fires when a change in motion activity is detected
-    BackgroundGeolocation.onActivityChange(location => {
-      console.log(location, 'activity');
     });
 
     // This event fires when the user toggles location-services authorization
@@ -50,58 +46,162 @@ class App extends Component {
       console.log(location, 'provider');
     });
 
-    BackgroundGeolocation.ready(
-      {
-        reset: true,
-        desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-        locationAuthorizationRequest: 'WhenInUse',
-        locationAuthorizationAlert: {
-          titleWhenNotEnabled: 'Услуги определения местоположения не включены',
-          titleWhenOff: 'Расположение-услуги OFF',
-          instructions: 'Вы должны включить услуги локации',
-          cancelButton: 'Отмена',
-          settingsButton: 'Настройки',
-        },
-        distanceFilter: 1,
-        stopTimeout: 1,
-        logLevel: BackgroundGeolocation.LOG_LEVEL_INFO,
-        stopOnTerminate: false,
-        startOnBoot: true,
-        forceReloadOnBoot: true,
-        foregroundService: true,
+    BackgroundGeolocation.ready({
+      reset: true,
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      locationAuthorizationRequest: 'WhenInUse',
+      locationAuthorizationAlert: {
+        titleWhenNotEnabled: 'Услуги определения местоположения не включены',
+        titleWhenOff: 'Расположение-услуги OFF',
+        instructions: 'Вы должны включить услуги локации',
+        cancelButton: 'Отмена',
+        settingsButton: 'Настройки',
       },
-      state => {
-        console.log(
-          '- BackgroundGeolocation is configured and ready: ',
-          state.enabled,
-        );
+      distanceFilter: 1,
+      stopTimeout: 1,
+      logLevel: BackgroundGeolocation.LOG_LEVEL_INFO,
+      stopOnTerminate: false,
+      startOnBoot: false,
+      forceReloadOnBoot: false,
+      foregroundService: true,
+    });
 
-        if (!state.enabled) {
-          ////
-          // 3. Start tracking!
-          //
-          BackgroundGeolocation.start(function() {
-            console.log('- Start success');
+    BackgroundGeolocation.onLocation(
+      location => {
+        let {initialCoord, wholeDistance} = this.state;
+        if (
+          location &&
+          location.coords &&
+          location.coords.latitude &&
+          initialCoord
+        ) {
+          const bCoord = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          };
+          const lastDistance = haversine(initialCoord, bCoord) / 1000;
+          wholeDistance += lastDistance;
+          this.setState({
+            wholeDistance,
+            initialCoord: bCoord,
+            lastDistance,
           });
         }
       },
+      err => {
+        console(err, 'err');
+      },
     );
   }
-  onLocation = location => {
-    console.log(location, 'location');
+
+  calculatePaces = () => {
+    const {wholeDistance, passedTime, lastDistance} = this.state;
+    if (lastDistance) {
+      const avgPace = Math.round(passedTime / wholeDistance);
+      const currentPace = Math.round(1 / lastDistance);
+      this.setState({
+        ...this.state,
+        avgPace,
+        currentPace,
+      });
+    }
   };
-  startLocation = () => {
-    console.log('start');
-    this.setState({enabled: false});
+
+  startPauseRun = () => {
+    const {startedRun} = this.state;
+    if (!startedRun) {
+      this.startRunning();
+    } else {
+      this.pauseRunning();
+    }
+  };
+
+  pauseRunning = () => {
+    const {passedTime} = this.state;
+    clearInterval(this.timeInterval);
+    BackgroundGeolocation.stop();
+    BackgroundGeolocation.removeListeners();
+    this.setState({
+      ...this.state,
+      startedRun: false,
+      saveTime: passedTime,
+    });
+  };
+
+  startRunning = () => {
+    const {saveTime} = this.state;
+    const startTime = new Date().getTime();
+
+    this.setState({
+      ...this.state,
+      startedRun: true,
+    });
+
     BackgroundGeolocation.start(() => {
       BackgroundGeolocation.resetOdometer().then((location: any) => {
+        const initialCoord = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+        this.timeInterval = setInterval(() => {
+          const now = new Date().getTime();
+          const passedTime = now - startTime + saveTime;
+          this.calculatePaces();
+          this.setState({
+            ...this.state,
+            passedTime,
+            saveTime: 0,
+          });
+        }, 1000);
+        this.setState({
+          ...this.state,
+          initialCoord,
+        });
         console.log('BackgroundGeolocation reset odometr success: ', location);
       });
       console.log('BackgroundGeolocation start success');
     });
   };
 
+  resetRun = () => {
+    clearInterval(this.timeInterval);
+    BackgroundGeolocation.stop();
+    BackgroundGeolocation.removeListeners();
+    this.setState({
+      ...this.state,
+      initialCoord: null,
+      wholeDistance: 0,
+      passedTime: 0,
+      lastDistance: 0,
+      currentPace: 0,
+      avgPace: 0,
+      saveTime: 0,
+      startedRun: false,
+    });
+  };
+
   render() {
+    const {
+      wholeDistance,
+      passedTime,
+      currentPace,
+      avgPace,
+      startedRun,
+    } = this.state;
+    const passedMinutes = Math.floor(
+      (passedTime % (1000 * 60 * 60)) / (1000 * 60),
+    );
+    const passedSeconds = Math.floor((passedTime % (1000 * 60)) / 1000);
+    const currentPaceMinutes = Math.floor(
+      (currentPace % (1000 * 60 * 60)) / (1000 * 60),
+    );
+    const currentPaceSeconds = Math.floor((currentPace % (1000 * 60)) / 1000);
+    const avgPaceMinutes = Math.floor(
+      (avgPace % (1000 * 60 * 60)) / (1000 * 60),
+    );
+    const avgPaceSeconds = Math.floor((avgPace % (1000 * 60)) / 1000);
+    const firstButtonText = startedRun ? 'ПАУЗА' : 'СТАРТ';
+    const secondButtonText = 'СБРОС';
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -111,12 +211,16 @@ class App extends Component {
             style={styles.scrollView}>
             <View style={styles.body}>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>43:13</Text>
+                <Text style={styles.sectionTitle}>
+                  {passedMinutes}:{passedSeconds}
+                </Text>
                 <Text style={styles.sectionDescription}>Время</Text>
               </View>
               <Divider style={styles.divider} />
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle2}>5.05</Text>
+                <Text style={styles.sectionTitle2}>
+                  {parseFloat(wholeDistance).toFixed(2)}
+                </Text>
                 <Text style={styles.sectionDescription}>КИЛОМЕТР</Text>
               </View>
               <Divider style={styles.divider} />
@@ -124,13 +228,17 @@ class App extends Component {
                 <View>
                   <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}>
-                      <Text style={styles.sectionTitle}>9:15</Text>
+                      <Text style={styles.sectionTitle}>
+                        {currentPaceMinutes}:{currentPaceSeconds}
+                      </Text>
                       <Text style={styles.sectionDescription}>
                         Currenct pace
                       </Text>
                     </View>
                     <View style={styles.rightBlock}>
-                      <Text style={styles.sectionTitle}>8:32</Text>
+                      <Text style={styles.sectionTitle}>
+                        {avgPaceMinutes}:{avgPaceSeconds}
+                      </Text>
                       <Text style={styles.sectionDescription}>avg pace</Text>
                     </View>
                   </View>
@@ -138,16 +246,21 @@ class App extends Component {
               </View>
               <Divider style={styles.divider} />
               <View style={{flexDirection: 'row', marginTop: 30}}>
-                <View style={{flex: 1}}>
+                <View style={styles.buttonWrapper}>
                   <Button
-                    title="Start"
-                    style={styles.button}
+                    title={firstButtonText}
+                    buttonStyle={styles.button}
                     type="outline"
-                    onPress={this.startLocation}
+                    onPress={this.startPauseRun}
                   />
                 </View>
-                <View style={{flex: 1}}>
-                  <Button title="Reset" style={styles.button} type="outline" />
+                <View style={styles.buttonWrapper}>
+                  <Button
+                    title={secondButtonText}
+                    buttonStyle={styles.button}
+                    type="outline"
+                    onPress={this.resetRun}
+                  />
                 </View>
               </View>
             </View>
@@ -217,10 +330,18 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 0,
-    maxWidth: 150,
+    maxWidth: 300,
+    minWidth: 170,
+    minHeight: 60,
     justifyContent: 'center',
     alignSelf: 'center',
+    borderRadius: 50,
     marginBottom: 15,
+  },
+  buttonWrapper: {
+    fontSize: 30,
+    flex: 1,
+    height: 200,
   },
 });
 
