@@ -48,7 +48,7 @@ class App extends Component {
 
     BackgroundGeolocation.ready({
       reset: true,
-      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
       locationAuthorizationRequest: 'WhenInUse',
       locationAuthorizationAlert: {
         titleWhenNotEnabled: 'Услуги определения местоположения не включены',
@@ -58,12 +58,13 @@ class App extends Component {
         settingsButton: 'Настройки',
       },
       distanceFilter: 1,
-      stopTimeout: 1,
+      desiredOdometerAccuracy: 10,
+      stopTimeout: 5,
+      stationaryRadius: 0,
       logLevel: BackgroundGeolocation.LOG_LEVEL_INFO,
       stopOnTerminate: false,
-      startOnBoot: false,
-      forceReloadOnBoot: false,
-      foregroundService: true,
+      startOnBoot: true,
+      forceReloadOnBoot: true,
     });
 
     BackgroundGeolocation.onLocation(
@@ -136,23 +137,24 @@ class App extends Component {
       ...this.state,
       startedRun: true,
     });
+    this.timeInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const passedTime = now - startTime + saveTime;
+      this.calculatePaces();
+      this.setState({
+        ...this.state,
+        passedTime,
+        saveTime: 0,
+      });
+    }, 1000);
 
     BackgroundGeolocation.start(() => {
       BackgroundGeolocation.resetOdometer().then((location: any) => {
+        alert(JSON.stringify(location));
         const initialCoord = {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         };
-        this.timeInterval = setInterval(() => {
-          const now = new Date().getTime();
-          const passedTime = now - startTime + saveTime;
-          this.calculatePaces();
-          this.setState({
-            ...this.state,
-            passedTime,
-            saveTime: 0,
-          });
-        }, 1000);
         this.setState({
           ...this.state,
           initialCoord,
