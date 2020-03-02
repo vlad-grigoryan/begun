@@ -24,7 +24,7 @@ jobs:
           cd ios && pod install
       - name: Build app
         run: |       
-          find / -name begun.xcworkspace
+          # find / -name begun.xcworkspace 2>/dev/null
           xcodebuild -workspace begun.xcworkspace -scheme begun archive -archivePath begun.xcarchive -allowProvisioningUpdates
           xcodebuild -exportArchive -archivePath ./begun.xcarchive -exportPath . -exportOptionsPlist begun/Info.plist
           mv begun.ipa ../begun.ipa
