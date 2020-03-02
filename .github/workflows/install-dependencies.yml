@@ -23,8 +23,9 @@ jobs:
         run: |
           cd ios && pod install
       - name: Archive app
+        run: |
           xcodebuild archive \
-          -workspace "brgun.xcworkspace" \
+          -workspace "begun.xcworkspace" \
           -scheme begun \
       - name: Build app
         run: |       
