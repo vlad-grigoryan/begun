@@ -22,6 +22,10 @@ jobs:
       - name: Install pod dependencies
         run: |
           cd ios && pod install
+      - name: Archive app
+          xcodebuild archive \
+          -workspace "brgun.xcworkspace" \
+          -scheme begun \
       - name: Build app
         run: |       
           # find / -name begun.xcworkspace 2>/dev/null
