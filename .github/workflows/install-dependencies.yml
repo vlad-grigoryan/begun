@@ -19,7 +19,7 @@ jobs:
           pwd
           xcodebuild archive \
           -workspace "./ios/begun.xcworkspace" \
-          -scheme CLI -destination generic/platform=iOS
+          -scheme begun -destination generic/platform=iOS
       - name: Build app
         run: |       
           # find / -name begun.xcworkspace 2>/dev/null
