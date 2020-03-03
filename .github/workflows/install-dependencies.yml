@@ -29,8 +29,3 @@ jobs:
       - name: upload app
         run: |
           xcrun altool --upload-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: begun.ipa
-          path: ios/build/
