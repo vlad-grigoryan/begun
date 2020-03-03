@@ -16,7 +16,9 @@ jobs:
           cd ios && pod install
       - name: auto increment app version
         run: |
-           cd ios && xcrun agvtool next-version -all
+           buildNumber=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion "$PRODUCT_SETTINGS_PATH")\
+           buildNumber=$(($buildNumber + 1))\
+           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "$PRODUCT_SETTINGS_PATH"
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
