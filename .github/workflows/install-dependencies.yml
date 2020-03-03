@@ -19,7 +19,7 @@ jobs:
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
       - name: export ipa file
         run: |
-          xcodebuild -exportArchive -archivePath $PWD/build/CLI.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
+          xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
       - name: Build app
         run: |       
           xcodebuild -workspace begun.xcworkspace -scheme begun archive -archivePath begun.xcarchive -allowProvisioningUpdates
