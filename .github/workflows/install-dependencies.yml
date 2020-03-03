@@ -20,11 +20,9 @@ jobs:
       - name: export ipa file
         run: |
           xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
-      - name: Build app
-        run: |       
-          xcodebuild -workspace begun.xcworkspace -scheme begun archive -archivePath begun.xcarchive -allowProvisioningUpdates
-          xcodebuild -exportArchive -archivePath ./begun.xcarchive -exportPath . -exportOptionsPlist begun/Info.plist
-          mv begun.ipa ../begun.ipa
+      - name: upload ipa file 
+        run: |
+          xcrun altool --validate-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277       
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
