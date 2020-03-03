@@ -16,11 +16,12 @@ jobs:
           cd ios && pod install
       - name: Archive app
         run: |
-          pwd
-          xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/CLI.xcarchive
+          xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
+      - name: export ipa file
+        run: |
+          xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
       - name: Build app
         run: |       
-          # find / -name begun.xcworkspace 2>/dev/null
           xcodebuild -workspace begun.xcworkspace -scheme begun archive -archivePath begun.xcarchive -allowProvisioningUpdates
           xcodebuild -exportArchive -archivePath ./begun.xcarchive -exportPath . -exportOptionsPlist begun/Info.plist
           mv begun.ipa ../begun.ipa
