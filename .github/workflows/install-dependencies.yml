@@ -17,6 +17,16 @@ jobs:
       - name: auto increment app version
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
+      - name: Prepare signing
+        uses: ngeri/prepare-signing@v1.0.2
+        with:
+          appStoreConnectPrivateKey: ${{ secrets.appStoreConnectPrivateKey }}
+          keyID: ${{ env.keyID }}
+          issuerID: ${{ env.issuerID }}
+          base64P12File: ${{ secrets.base64P12File }}
+          p12Password: ${{ secrets.p12Password }}
+          bundleIdentifier: ${{ env.bundleIdentifier }}
+          signType: ${{ env.signType }}
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
