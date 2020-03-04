@@ -25,8 +25,8 @@ jobs:
           issuerID: ${{ env.issuerID }}
           base64P12File: ${{ secrets.base64P12File }}
           p12Password: ${{ secrets.p12Password }}
-          bundleIdentifier: ${{ env.bundleIdentifier }}
-          signType: ${{ env.signType }}
+          bundleIdentifier: mobi.robofruit.run-tracking-app
+          signType: IOS_APP_DEVELOPMENT
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
