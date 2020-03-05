@@ -19,7 +19,7 @@ jobs:
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
       - name: Sign in app store
         uses: maierj/fastlane-action@v1.4.0
-          with:
+        with:
           lane: 'release'
           subdirectory: 'ios'
       - name: Archive app
