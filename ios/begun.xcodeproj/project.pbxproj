@@ -714,6 +714,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "mobi.robofruit.run-tracking-app";
 				PRODUCT_NAME = "Бегун";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=*]" = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

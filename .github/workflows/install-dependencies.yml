@@ -6,7 +6,7 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-    steps: 
+    steps:
       - uses: actions/checkout@v2
       - name: Install npm dependencies
         run: |
@@ -17,11 +17,10 @@ jobs:
       - name: auto increment app version
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
-      - name: Sign in app store
-        uses: maierj/fastlane-action@v1.4.0
-        with:
-          lane: 'release'
-          subdirectory: 'ios'
+      - name: Setup provisioning profile
+        run: ./.github/secrets/decrypt_secrets.sh
+        env:
+          IOS_PROFILE_KEY: ${{ secrets.IOS_PROFILE_KEY }}
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
@@ -30,7 +29,7 @@ jobs:
           xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
       - name: validate app
         run: |
-          xcrun altool --validate-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277       
+          xcrun altool --validate-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277
       - name: upload app
         run: |
           xcrun altool --upload-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277

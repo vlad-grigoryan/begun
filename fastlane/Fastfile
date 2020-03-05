@@ -1,7 +1,30 @@
-lane :release do
-  sync_code_signing
-  disable_automatic_code_signing(path: "ios/begun.xcodeproj")
-  build_app
-  enable_automatic_code_signing(path: "ios/begun.xcodeproj")
-  upload_to_testflight
+lane :setup do
+  setup_project
 end
+
+private_lane :setup_project do
+  create_keychain(
+    name: "actiontest_keychain",
+    password: "meow",
+    default_keychain: true,
+    unlock: true,
+    timeout: 3600,
+    lock_when_sleeps: false
+  )
+end
+
+private_lane :build do
+match(
+  type: "appstore",
+  readonly: is_ci,
+  keychain_name: "actiontest_keychain",
+  keychain_password: "meow"
+)
+
+update_project_provisioning(
+  xcodeproj: ENV["XCODE_PROJ"],
+  profile: ENV["sigh_com.redspace.actionstest_appstore_profile-path"],
+  target_filter: "actionstest",
+  build_configuration: "Release",
+  code_signing_identity: "iPhone Distribution: REDspace Inc."
+)
