@@ -22,7 +22,7 @@ jobs:
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
       - name: Sign in app store
-        run: bundle exec fastlane scan --destination "${destination}" --scheme "${scheme}"
+        run: fastlane scan --destination "${destination}" --scheme "${scheme}"
         env:
           scheme: $
           destination: $
