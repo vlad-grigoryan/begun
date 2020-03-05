@@ -6,10 +6,6 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 8', 'platform=iOS Simulator,OS=13.1,name=iPhone 9']
-        scheme: ['YOU-SCHEME', 'YOU-SCHEME-WITH-JAPANESE-SYSTEM-LANGUAGE']
     steps: 
       - uses: actions/checkout@v2
       - name: Install npm dependencies
@@ -22,7 +18,7 @@ jobs:
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
       - name: Sign in app store
-        run: fastlane scan --destination "${destination}" --scheme "${scheme}"
+        run: fastlane scan --scheme "${scheme}"
         env:
           scheme: $
           destination: $
