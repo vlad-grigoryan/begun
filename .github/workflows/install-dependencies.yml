@@ -18,10 +18,10 @@ jobs:
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
       - name: Sign in app store
-        run: fastlane scan --scheme "${scheme}"
-        env:
-          scheme: $
-          destination: $
+        uses: maierj/fastlane-action@v1.4.0
+        with:
+          lane: 'release'
+          subdirectory: 'ios'
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
