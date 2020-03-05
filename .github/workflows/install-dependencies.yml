@@ -23,7 +23,7 @@ jobs:
           IOS_PROFILE_KEY: ${{ secrets.IOS_PROFILE_KEY }}
       - name: Archive app
         run: |
-          xcodebuild -workspace -allowProvisioningUpdates ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
+          xcodebuild -workspace ios/begun.xcworkspace -allowProvisioningUpdates -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
       - name: export ipa file
         run: |
           xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
