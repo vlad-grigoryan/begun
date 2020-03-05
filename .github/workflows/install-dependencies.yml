@@ -6,6 +6,10 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 8', 'platform=iOS Simulator,OS=13.1,name=iPhone 9']
+        scheme: ['YOU-SCHEME', 'YOU-SCHEME-WITH-JAPANESE-SYSTEM-LANGUAGE']
     steps: 
       - uses: actions/checkout@v2
       - name: Install npm dependencies
@@ -17,16 +21,11 @@ jobs:
       - name: auto increment app version
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
-      - name: Prepare signing
-        uses: ngeri/prepare-signing@v1.0.2
-        with:
-          appStoreConnectPrivateKey: ${{ secrets.appStoreConnectPrivateKey }}
-          keyID: 6QR88NVZP6
-          issuerID: 873452a0-1ec1-4ea3-8efa-3991637ec5cf
-          base64P12File: ${{ secrets.base64P12File }}
-          p12Password: ${{ secrets.p12Password }}
-          bundleIdentifier: mobi.robofruit.run-tracking-app
-          signType: IOS_APP_DEVELOPMENT
+      - name: Sign in app store
+        run: bundle exec fastlane scan --destination "${destination}" --scheme "${scheme}"
+        env:
+          scheme: $
+          destination: $
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
