@@ -5,7 +5,7 @@ on:
       - master
 jobs:
   build-ios:
-    runs-on: [self-hosted, macos]
+    runs-on: macos-latest
     steps: 
       - uses: actions/checkout@v2
       - name: Install npm dependencies
@@ -14,19 +14,23 @@ jobs:
       - name: Install pod dependencies
         run: |
           cd ios && pod install
+      - name: auto increment app version
+        run: |
+          cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
+      - name: Sign in app store
+        run: fastlane scan --scheme "${scheme}"
+        env:
+          scheme: $
+          destination: $
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
       - name: export ipa file
         run: |
           xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
-      - name: Build app
-        run: |       
-          xcodebuild -workspace begun.xcworkspace -scheme begun archive -archivePath begun.xcarchive -allowProvisioningUpdates
-          xcodebuild -exportArchive -archivePath ./begun.xcarchive -exportPath . -exportOptionsPlist begun/Info.plist
-          mv begun.ipa ../begun.ipa
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: begun.ipa
-          path: ios/build/
+      - name: validate app
+        run: |
+          xcrun altool --validate-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277       
+      - name: upload app
+        run: |
+          xcrun altool --upload-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277
