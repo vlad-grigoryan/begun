@@ -23,8 +23,6 @@ jobs:
           appStoreConnectPrivateKey: ${{ secrets.appStoreConnectPrivateKey }}
           keyID: ${{ env.keyID }}
           issuerID: ${{ env.issuerID }}
-          keychainName: ${{ secrets.keychainName }}
-          keychainPassword: ${{ secrets.keychainPassword }}
           base64P12File: ${{ secrets.base64P12File }}
           p12Password: ${{ secrets.p12Password }}
           bundleIdentifier: ${{ env.bundleIdentifier }}
