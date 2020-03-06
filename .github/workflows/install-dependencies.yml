@@ -30,7 +30,7 @@ jobs:
         env:
           keyID: 6QR88NVZP6
           issuerID: 873452a0-1ec1-4ea3-8efa-3991637ec5cf
-          signType: IOS_APP_DEVELOPMENT
+          signType: IOS_APP_STORE
           bundleIdentifier: mobi.robofruit.run-tracking-app
       - name: Archive app
         run: |
