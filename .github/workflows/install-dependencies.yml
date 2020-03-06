@@ -36,7 +36,7 @@ jobs:
           bundleIdentifier: IOS_APP_DEVELOPMENT
       - name: Archive app
         run: |
-          xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
+          xcodebuild -workspace ios/begun.xcworkspace -allowProvisioningUpdates -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
       - name: export ipa file
         run: |
           xcodebuild -exportArchive -archivePath $PWD/build/begun.xcarchive -exportOptionsPlist exportOptions.plist -exportPath $PWD/build
