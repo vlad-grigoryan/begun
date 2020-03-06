@@ -18,9 +18,22 @@ jobs:
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
       - name: Setup provisioning profile
-        run: ./.github/secrets/decrypt_secrets.sh
+        uses: ngeri/prepare-signing@v1.0.2
+        with:
+          appStoreConnectPrivateKey: ${{ secrets.appStoreConnectPrivateKey }}
+          keyID: ${{ env.keyID }}
+          issuerID: ${{ env.issuerID }}
+          keychainName: ${{ secrets.keychainName }}
+          keychainPassword: ${{ secrets.keychainPassword }}
+          base64P12File: ${{ secrets.base64P12File }}
+          p12Password: ${{ secrets.p12Password }}
+          bundleIdentifier: ${{ env.bundleIdentifier }}
+          signType: ${{ env.signType }}
         env:
-          IOS_PROFILE_KEY: ${{ secrets.IOS_PROFILE_KEY }}
+          keyID: 6QR88NVZP6
+          issuerID: 873452a0-1ec1-4ea3-8efa-3991637ec5cf
+          signType: IOS_APP_DEVELOPMENT
+          bundleIdentifier: IOS_APP_DEVELOPMENT
       - name: Archive app
         run: |
           xcodebuild -workspace ios/begun.xcworkspace -scheme begun -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/begun.xcarchive
