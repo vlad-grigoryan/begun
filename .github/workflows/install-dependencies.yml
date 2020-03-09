@@ -25,8 +25,8 @@ jobs:
           fastlane setup --verbose
       - name: Run fastlane signing
         run: |
-          match nuke development
-          match nuke distribution
+          fastlane match nuke development
+          fastlane match nuke distribution
           fastlane compile --verbose
         env:
           MATCH_REPO: ${{ secrets.MATCH_REPO }}
