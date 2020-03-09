@@ -7,7 +7,7 @@ platform :ios do
 	ENV["APP_ID"] = "mobi.robofruit.run-tracking-app"
 	ENV["PLIST"] = "./begun/Info.plist"
 	ENV["APP_NAME"] = "begun"
-	ENV["FASTLANE_PASSWORD"] = "Vlad9075"
+	ENV["FASTLANE_PASSWORD"] = "Vlad009277"
   end
 
 	lane :everything do
