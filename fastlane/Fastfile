@@ -41,7 +41,7 @@ platform :ios do
   end
 
   private_lane :build do
-    enable_automatic_code_signing(path: "ios/begun.xcodeproj")
+   # enable_automatic_code_signing(path: "ios/begun.xcodeproj")
 
 	match(
 		type: "appstore",
