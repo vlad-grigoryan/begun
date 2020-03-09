@@ -13,6 +13,7 @@ platform :ios do
 	lane :everything do
 		setup
 		compile
+		deploy
 	end
 
   lane :setup do
@@ -21,6 +22,12 @@ platform :ios do
 
   lane :compile do
 	build
+  end
+
+  lane :deploy do
+  	  lane :compile do
+    	deploy_gym
+      end
   end
 
 
@@ -42,19 +49,21 @@ platform :ios do
         keychain_name: "begun_keychain",
         keychain_password: "begun"
   	)
-
-    gym(
-      scheme: "begun",
-      export_method: "app-store",
-      configuration: "Release",
-#     export_xcargs: "-allowProvisioningUpdates",
-      export_options: {
-        uploadBitcode: false,
-        compileBitcode: false,
-        method: "app-store",
-      }
-    )
-
   end
+
+  private_lane :deploy_gym do
+      gym(
+        scheme: "begun",
+        export_method: "app-store",
+        configuration: "Release",
+  #     export_xcargs: "-allowProvisioningUpdates",
+        export_options: {
+          uploadBitcode: false,
+          compileBitcode: false,
+          method: "app-store",
+        }
+      )
+
+    end
 
 end
