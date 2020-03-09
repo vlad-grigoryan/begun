@@ -42,13 +42,6 @@ platform :ios do
 	  	keychain_password: "begun"
   	)
 
-	update_project_provisioning(
-		xcodeproj: ENV["XCODE_PROJ"],
-		target_filter: "begun", # matches name or type of a target
-		build_configuration: "Release",
-		code_signing_identity: ENV["SIGNING_ID"]
-	)
-
   end
 
 end
