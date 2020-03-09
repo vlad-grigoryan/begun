@@ -37,7 +37,7 @@ platform :ios do
   private_lane :build do
 	match(
 		type: "appstore",
-		readonly: is_ci,
+		app_identifier: ENV["APP_ID"],
 	  	keychain_name: "begun_keychain",
 	  	keychain_password: "begun"
   	)
