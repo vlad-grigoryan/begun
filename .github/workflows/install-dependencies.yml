@@ -26,6 +26,9 @@ jobs:
       - name: Run fastlane build
         run: |
           pwd; ls; fastlane compile --verbose
+      - name: Run fastlane deploy
+        run: |
+          pwd; ls; fastlane deploy --verbose
         env:
           MATCH_REPO: ${{ secrets.MATCH_REPO }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASS }}
