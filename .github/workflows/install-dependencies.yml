@@ -25,6 +25,8 @@ jobs:
           fastlane setup --verbose
       - name: Run fastlane build
         run: |
+          pwd
+          ls
           fastlane compile --verbose
         env:
           MATCH_REPO: ${{ secrets.MATCH_REPO }}
