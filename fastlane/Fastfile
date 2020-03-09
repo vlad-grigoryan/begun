@@ -52,6 +52,7 @@ platform :ios do
   private_lane :deploy_gym do
       gym(
         scheme: "begun",
+        workspace: "ios/begun.xcworkspace",
         export_method: "app-store",
         configuration: "Release",
   #     export_xcargs: "-allowProvisioningUpdates",
