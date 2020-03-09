@@ -41,6 +41,8 @@ platform :ios do
   end
 
   private_lane :build do
+    enable_automatic_code_signing(path: "begun.xcodeproj")
+
 	match(
 		type: "appstore",
 		app_identifier: ENV["APP_ID"],
@@ -55,7 +57,7 @@ platform :ios do
         workspace: "ios/begun.xcworkspace",
         export_method: "app-store",
         configuration: "Release",
-  #     export_xcargs: "-allowProvisioningUpdates",
+        export_xcargs: "-allowProvisioningUpdates",
         export_options: {
           uploadBitcode: false,
           compileBitcode: false,
