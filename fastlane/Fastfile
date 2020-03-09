@@ -38,6 +38,8 @@ platform :ios do
 	match(
 		type: "appstore",
 		app_identifier: ENV["APP_ID"]
+        keychain_name: "begun_keychain",
+        keychain_password: "begun"
   	)
 
   end
