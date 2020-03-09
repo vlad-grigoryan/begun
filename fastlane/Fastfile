@@ -41,8 +41,18 @@ platform :ios do
         keychain_name: "begun_keychain",
         keychain_password: "begun"
   	)
-  	build_app(scheme: "begun")
 
+  	    gym(
+          scheme: "begun",
+          export_method: "app-store",
+          configuration: "Release",
+    #     export_xcargs: "-allowProvisioningUpdates",
+          export_options: {
+            uploadBitcode: false,
+            compileBitcode: false,
+            method: "app-store",
+          }
+        )
 
   end
 
