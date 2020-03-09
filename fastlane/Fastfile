@@ -41,6 +41,8 @@ platform :ios do
         keychain_name: "begun_keychain",
         keychain_password: "begun"
   	)
+  	build_app(scheme: "begun")
+
 
   end
 
