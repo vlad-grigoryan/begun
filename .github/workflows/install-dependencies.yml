@@ -8,19 +8,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install npm dependencies
-        run: |
-          npm install
-      - name: Install pod dependencies
-        run: |
-          cd ios && pod install
       - name: auto increment app version
         run: |
           cd ios && xcrun agvtool new-version -all $GITHUB_RUN_NUMBER
-      - name: Install and run xcodegen
-        run: |
-          brew install xcodegen
-          xcodegen generate
       - name: Run fastlane setup
         env:
           TEAM_ID: ${{ secrets.TEAM_ID }}
