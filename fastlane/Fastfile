@@ -42,17 +42,17 @@ platform :ios do
         keychain_password: "begun"
   	)
 
-  	    gym(
-          scheme: "begun",
-          export_method: "app-store",
-          configuration: "Release",
-    #     export_xcargs: "-allowProvisioningUpdates",
-          export_options: {
-            uploadBitcode: false,
-            compileBitcode: false,
-            method: "app-store",
-          }
-        )
+    gym(
+      scheme: "begun",
+      export_method: "app-store",
+      configuration: "Release",
+#     export_xcargs: "-allowProvisioningUpdates",
+      export_options: {
+        uploadBitcode: false,
+        compileBitcode: false,
+        method: "app-store",
+      }
+    )
 
   end
 
