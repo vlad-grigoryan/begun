@@ -1,30 +1,55 @@
-lane :setup do
-  setup_project
+fastlane_version "2.98.0"
+default_platform :ios
+
+platform :ios do
+  before_all do |lane, options|
+	ENV["XCODE_PROJ"] = "./begun.xcodeproj"
+	ENV["APP_ID"] = "mobi.robofruit.run-tracking-app"
+	ENV["PLIST"] = "./begun/Info.plist"
+	ENV["APP_NAME"] = "begun"
+  end
+
+	lane :everything do
+		setup
+		compile
+	end
+
+  lane :setup do
+	setup_project
+  end
+
+  lane :compile do
+	build
+  end
+
+
+  private_lane :setup_project do
+	create_keychain(
+		name: "begun_keychain",
+		password: "begun",
+		default_keychain: true,
+		unlock: true,
+		timeout: 3600,
+		lock_when_sleeps: false
+	)
+  end
+
+  private_lane :build do
+	match(
+		type: "appstore",
+		readonly: is_ci,
+	  	keychain_name: "begun_keychain",
+	  	keychain_password: "begun"
+  	)
+
+	update_project_provisioning(
+		xcodeproj: ENV["XCODE_PROJ"],
+		profile: ENV["sigh_com.redspace.actionstest_appstore_profile-path"],
+		target_filter: "begun", # matches name or type of a target
+		build_configuration: "Release",
+		code_signing_identity: ENV["SIGNING_ID"]
+	)
+
+  end
+
 end
-
-private_lane :setup_project do
-  create_keychain(
-    name: "actiontest_keychain",
-    password: "meow",
-    default_keychain: true,
-    unlock: true,
-    timeout: 3600,
-    lock_when_sleeps: false
-  )
-end
-
-private_lane :build do
-match(
-  type: "appstore",
-  readonly: is_ci,
-  keychain_name: "actiontest_keychain",
-  keychain_password: "meow"
-)
-
-update_project_provisioning(
-  xcodeproj: ENV["XCODE_PROJ"],
-  profile: ENV["sigh_com.redspace.actionstest_appstore_profile-path"],
-  target_filter: "actionstest",
-  build_configuration: "Release",
-  code_signing_identity: "iPhone Distribution: REDspace Inc."
-)
