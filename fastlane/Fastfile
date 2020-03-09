@@ -44,7 +44,6 @@ platform :ios do
 
 	update_project_provisioning(
 		xcodeproj: ENV["XCODE_PROJ"],
-		profile: ENV["sigh_com.redspace.actionstest_appstore_profile-path"],
 		target_filter: "begun", # matches name or type of a target
 		build_configuration: "Release",
 		code_signing_identity: ENV["SIGNING_ID"]
