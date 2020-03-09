@@ -30,6 +30,7 @@ platform :ios do
 		password: "begun",
 		default_keychain: true,
 		unlock: true,
+	    timeout: 3600,
 		lock_when_sleeps: false
 	)
   end
