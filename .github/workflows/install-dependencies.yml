@@ -26,15 +26,18 @@ jobs:
       - name: Run fastlane build
         run: |
           pwd; ls; fastlane compile --verbose
-      - name: Run fastlane deploy
-        run: |
-          pwd; ls; fastlane deploy --verbose
         env:
           MATCH_REPO: ${{ secrets.MATCH_REPO }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASS }}
           SIGNING_ID: ${{ secrets.SIGNING_ID }}
           APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
           TEAM_ID: ${{ secrets.TEAM_ID }}
+        - name: Run fastlane deploy
+          run: |
+            pwd; ls; fastlane deploy --verbose
+          env:
+            APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
+            TEAM_ID: ${{ secrets.TEAM_ID }}
       - name: upload app
         run: |
           xcrun altool --upload-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277
