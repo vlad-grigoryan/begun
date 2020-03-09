@@ -25,9 +25,7 @@ platform :ios do
   end
 
   lane :deploy do
-  	  lane :compile do
     	deploy_gym
-      end
   end
 
 
