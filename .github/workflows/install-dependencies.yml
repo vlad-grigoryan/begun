@@ -25,7 +25,13 @@ jobs:
           fastlane setup --verbose
       - name: Run fastlane signing
         run: |
-          fastlane match appstore --readonly
+          fastlane compile --verbose
+        env:
+          MATCH_REPO: ${{ secrets.MATCH_REPO }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASS }}
+          SIGNING_ID: ${{ secrets.SIGNING_ID }}
+          APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
       - name: Run fastlane build
         run: |
           pwd; ls; fastlane deploy --verbose
