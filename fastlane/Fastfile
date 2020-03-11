@@ -52,6 +52,7 @@ platform :ios do
     sh("security list-keychains -d user")
     sh("security default-keychain -d user")
     sh("security find-identity -v -p codesigning begun_keychain")
+    disable_automatic_code_signing(path: "ios/begun.xcodeproj")
 
   	update_project_provisioning(
       xcodeproj: ENV["XCODE_PROJ"],
@@ -63,7 +64,6 @@ platform :ios do
   end
 
   private_lane :deploy_gym do
-      disable_automatic_code_signing(path: "ios/begun.xcodeproj")
       gym(
         scheme: "begun",
         workspace: "ios/begun.xcworkspace",
