@@ -41,7 +41,7 @@ platform :ios do
   end
 
   private_lane :build do
-   disable_automatic_code_signing(path: "ios/begun.xcodeproj")
+   #disable_automatic_code_signing(path: "ios/begun.xcodeproj")
 
 	match(
 		type: "appstore",
@@ -50,6 +50,19 @@ platform :ios do
         keychain_name: "begun_keychain",
         keychain_password: "begun"
   	)
+
+  	update_project_provisioning(
+      xcodeproj: ENV["XCODE_PROJ"],
+      profile: ENV["sigh_mobi.robofruit.run-tracking-app_adhoc"],
+      target_filter: "actionstest",
+      build_configuration: "Release",
+      code_signing_identity: "iPhone Distribution: REDspace Inc."
+    )
+
+    build_app(
+      scheme: "actionstest",
+      project: ENV["XCODE_PROJ"],
+    )
   end
 
   private_lane :deploy_gym do
