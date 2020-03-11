@@ -68,8 +68,9 @@ platform :ios do
       project: ENV["XCODE_PROJ"],
       scheme: "begun",
       export_options: {
+        method: "app-store",
         provisioningProfiles: {
-          "_BUNDLE_NAME_" => "ENV['sigh_mobi.robofruit.run-tracking-app_appstore']"
+          "mobi.robofruit.run-tracking-app" => "ENV['sigh_mobi.robofruit.run-tracking-app_appstore']"
         }
       }
       )
