@@ -50,6 +50,13 @@ platform :ios do
         keychain_password: "begun"
   	)
 
+  	update_project_provisioning(
+      xcodeproj: ENV["XCODE_PROJ"],
+      profile: ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-path"],
+      target_filter: "begun",
+      build_configuration: "Release",
+      #code_signing_identity: "iPhone Distribution: REDspace Inc."
+    )
 
     build_app(
       scheme: "begun",
