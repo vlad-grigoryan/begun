@@ -70,7 +70,7 @@ platform :ios do
       export_options: {
         method: "app-store",
         provisioningProfiles: {
-          "mobi.robofruit.run-tracking-app" => "ENV['sigh_mobi.robofruit.run-tracking-app_appstore']"
+          "mobi.robofruit.run-tracking-app" => ENV['sigh_mobi.robofruit.run-tracking-app_appstore']
         }
       }
       )
