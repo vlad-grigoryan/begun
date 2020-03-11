@@ -46,7 +46,6 @@ platform :ios do
 	match(
 		type: "appstore",
 		app_identifier: ENV["APP_ID"],
-		readonly: is_ci,
         keychain_name: "begun_keychain",
         keychain_password: "begun"
   	)
@@ -60,7 +59,7 @@ platform :ios do
     )
 
     build_app(
-      scheme: "actionstest",
+      scheme: "buld",
       project: ENV["XCODE_PROJ"],
     )
   end
