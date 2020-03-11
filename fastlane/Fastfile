@@ -69,7 +69,6 @@ platform :ios do
         configuration: "Release",
         export_options: {
            method: "app-store",
-           method: "app-store",
            provisioningProfiles: {
              ENV["APP_ID"] => ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-name"]
            }
