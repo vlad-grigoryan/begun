@@ -43,38 +43,34 @@ platform :ios do
   private_lane :build do
    #disable_automatic_code_signing(path: "ios/begun.xcodeproj")
 
-	match(
-		type: "appstore",
-		readonly: true,
-        keychain_name: "begun_keychain",
-        keychain_password: "begun"
-  	)
-    sh("security list-keychains -d user")
-    sh("security default-keychain -d user")
-    sh("security find-identity -v -p codesigning begun_keychain")
-    disable_automatic_code_signing(path: "ios/begun.xcodeproj")
+	#match(
+	#	type: "appstore",
+	#	readonly: true,
+    #    keychain_name: "begun_keychain",
+    #    keychain_password: "begun"
+  	#)
+    #sh("security list-keychains -d user")
+    #sh("security default-keychain -d user")
+    #sh("security find-identity -v -p codesigning begun_keychain")
+    #disable_automatic_code_signing(path: "ios/begun.xcodeproj")
 
   	update_project_provisioning(
       xcodeproj: ENV["XCODE_PROJ"],
       profile: ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-path"],
-      target_filter: "begun",
-      build_configuration: "Release",
-      code_signing_identity: "iPhone Developer: VLADIMIR GRIGORYAN."
     )
+    Dir.chdir("..") do
+        sh("sed -i '' '/PROVISIONING_PROFILE_SPECIFIER/d;/DEVELOPMENT_TEAM/d' #{ENV["XCODE_PROJ"]}/project.pbxproj")
+    end
   end
 
   private_lane :deploy_gym do
       gym(
-        scheme: "begun",
-        workspace: "ios/begun.xcworkspace",
-        export_method: "app-store",
-        configuration: "Release",
-        export_xcargs: "-allowProvisioningUpdates",
-        export_options: {
-          uploadBitcode: false,
-          compileBitcode: false,
-          method: "app-store",
+      project: ENV["XCODE_PROJ"],
+      export_options: {
+        provisioningProfiles: {
+          "_BUNDLE_NAME_" => "ENV['sigh_mobi.robofruit.run-tracking-app_appstore']"
         }
+      }
       )
       enable_automatic_code_signing(path: "ios/begun.xcodeproj")
     end
