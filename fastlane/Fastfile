@@ -56,7 +56,7 @@ platform :ios do
       profile: ENV["sigh_mobi.robofruit.run-tracking-app_adhoc"],
       target_filter: "actionstest",
       build_configuration: "Release",
-      code_signing_identity: "iPhone Distribution: REDspace Inc."
+      #code_signing_identity: "iPhone Distribution: REDspace Inc."
     )
 
     build_app(
