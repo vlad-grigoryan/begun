@@ -72,7 +72,7 @@ platform :ios do
            provisioningProfiles: {
              ENV["APP_ID"] => ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-name"]
            }
-        }
+        },
         code_signing_identity: "iPhone Developer: VLADIMIR GRIGORYAN."
       )
       enable_automatic_code_signing(path: "ios/begun.xcodeproj")
