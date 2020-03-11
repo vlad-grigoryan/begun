@@ -49,11 +49,6 @@ platform :ios do
         keychain_name: "begun_keychain",
         keychain_password: "begun"
   	)
-    sh("security list-keychains -d user")
-    sh("security default-keychain -d user")
-    sh("security find-identity -v -p codesigning begun_keychain")
-    disable_automatic_code_signing(path: "ios/begun.xcodeproj")
-
   	update_project_provisioning(
       xcodeproj: ENV["XCODE_PROJ"],
       profile: ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-path"],
@@ -65,14 +60,21 @@ platform :ios do
 
   private_lane :deploy_gym do
       gym(
-      project: ENV["XCODE_PROJ"],
-      scheme: "begun",
-      export_options: {
-        method: "app-store",
-        provisioningProfiles: {
-          "mobi.robofruit.run-tracking-app" => ENV['sigh_mobi.robofruit.run-tracking-app_appstore']
+        scheme: "begun",
+        workspace: "ios/begun.xcworkspace",
+        export_method: "app-store",
+        clean: true,
+        export_method: "app-store",
+        output_directory:"./build",
+        configuration: "Release",
+        export_options: {
+           method: "app-store",
+           method: "app-store",
+           provisioningProfiles: {
+             ENV["APP_ID"] => ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-name"]
+           }
         }
-      }
+        code_signing_identity: "iPhone Developer: VLADIMIR GRIGORYAN."
       )
       enable_automatic_code_signing(path: "ios/begun.xcodeproj")
     end
