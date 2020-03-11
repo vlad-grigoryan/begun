@@ -52,7 +52,7 @@ platform :ios do
 
 
     build_app(
-      scheme: "buld",
+      scheme: "begun",
       project: ENV["XCODE_PROJ"],
     )
   end
