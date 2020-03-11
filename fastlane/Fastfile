@@ -57,11 +57,6 @@ platform :ios do
       build_configuration: "Release",
       #code_signing_identity: "iPhone Distribution: REDspace Inc."
     )
-
-    build_app(
-      scheme: "begun",
-      project: ENV["XCODE_PROJ"],
-    )
   end
 
   private_lane :deploy_gym do
