@@ -66,6 +66,7 @@ platform :ios do
   private_lane :deploy_gym do
       gym(
       project: ENV["XCODE_PROJ"],
+      scheme: "begun",
       export_options: {
         provisioningProfiles: {
           "_BUNDLE_NAME_" => "ENV['sigh_mobi.robofruit.run-tracking-app_appstore']"
