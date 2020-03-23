@@ -1,12 +1,14 @@
+# codesigning_identity: "Apple Distribution: Aleksandr Potemkin (74739P8ZK8)" will find when creating match repo with command  fastlane match appstore
+
+
 fastlane_version "2.98.0"
 default_platform :ios
 
 platform :ios do
   before_all do |lane, options|
-	ENV["XCODE_PROJ"] = "./ios/begun.xcodeproj"
-	ENV["APP_ID"] = "mobi.robofruit.run-tracking-app"
-	ENV["PLIST"] = "./begun/Info.plist"
-	ENV["APP_NAME"] = "begun"
+	ENV["XCODE_PROJ"] = "./ios/#{ENV['APP_SCHEMA_NAME']}.xcodeproj"
+	ENV["PLIST"] = "./#{ENV['APP_SCHEMA_NAME']}/Info.plist"
+	ENV["APP_NAME"] = "#{ENV['APP_SCHEMA_NAME']}"
 	ENV["FASTLANE_PASSWORD"] = "Vlad009277"
   end
 
@@ -31,8 +33,8 @@ platform :ios do
 
   private_lane :setup_project do
 	create_keychain(
-		name: "begun_keychain",
-		password: "begun",
+		name: "#{ENV['APP_SCHEMA_NAME']}_keychain",
+		password: ENV['APP_SCHEMA_NAME'],
 		default_keychain: true,
 		unlock: true,
 	    timeout: 3600,
@@ -41,20 +43,20 @@ platform :ios do
   end
 
   private_lane :build do
-   disable_automatic_code_signing(path: "ios/begun.xcodeproj",
+   disable_automatic_code_signing(path: "ios/#{ENV['APP_SCHEMA_NAME']}.xcodeproj",
     team_id: ENV['TEAM_ID']
    )
 
 	match(
 		type: "appstore",
 		readonly: true,
-        keychain_name: "begun_keychain",
-        keychain_password: "begun"
+        keychain_name: "#{ENV['APP_SCHEMA_NAME']}_keychain",
+        keychain_password: "#{ENV['APP_SCHEMA_NAME']}"
   	)
   	update_project_provisioning(
       xcodeproj: ENV["XCODE_PROJ"],
-      profile: ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-path"],
-      target_filter: "begun",
+      profile: ENV["sigh_#{ENV['APP_SCHEMA_NAME']}_appstore_profile-path"],
+      target_filter: "#{ENV['APP_SCHEMA_NAME']}",
       build_configuration: "Release",
       code_signing_identity: "Apple Distribution: Aleksandr Potemkin (74739P8ZK8)"
     )
@@ -62,8 +64,8 @@ platform :ios do
 
   private_lane :deploy_gym do
       gym(
-        scheme: "begun",
-        workspace: "ios/begun.xcworkspace",
+        scheme: "#{ENV['APP_SCHEMA_NAME']}",
+        workspace: "ios/#{ENV['APP_SCHEMA_NAME']}.xcworkspace",
         export_method: "app-store",
         clean: true,
         export_method: "app-store",
@@ -72,12 +74,12 @@ platform :ios do
         export_options: {
            method: "app-store",
            provisioningProfiles: {
-             ENV["APP_ID"] => ENV["sigh_mobi.robofruit.run-tracking-app_appstore_profile-name"]
+             ENV["APP_ID"] => ENV["sigh_#{ENV['APP_SCHEMA_NAME']}_appstore_profile-name"]
            }
         },
         codesigning_identity: "Apple Distribution: Aleksandr Potemkin (74739P8ZK8)"
       )
-      enable_automatic_code_signing(path: "ios/begun.xcodeproj")
+      enable_automatic_code_signing(path: "ios/#{ENV['APP_SCHEMA_NAME']}.xcodeproj")
     end
 
 end

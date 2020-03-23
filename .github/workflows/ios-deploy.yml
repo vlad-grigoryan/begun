@@ -1,3 +1,11 @@
+# all secrets
+# APPLE_ACCOUNT - account for sign in app store
+# TEAM_ID - app store team ID
+# MATCH_REPO - Repo for app certificate for match usage (you should make it as private)
+# MATCH_PASS -  secret environment variable named MATCH_PASSWORD.
+# APP_SCHEMA_NAME -  the app name used with xcode.(begun)
+# APP_ID -  the app id (mobi.robofruit.run-tracking-app)
+
 name: Build Android and iOS
 on:
   push:
@@ -21,6 +29,7 @@ jobs:
         env:
           APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
           TEAM_ID: ${{ secrets.TEAM_ID }}
+          APP_SCHEMA_NAME: ${{ secrets.APP_SCHEMA_NAME }}
         run: |
           fastlane setup --verbose
       - name: Run fastlane signing
@@ -32,12 +41,16 @@ jobs:
           SIGNING_ID: ${{ secrets.SIGNING_ID }}
           APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
           TEAM_ID: ${{ secrets.TEAM_ID }}
+          APP_SCHEMA_NAME: ${{ secrets.APP_SCHEMA_NAME }}
+          APP_ID: ${{secrets.APP_ID}}
       - name: Run fastlane build
         run: |
           pwd; ls; fastlane deploy --verbose
         env:
           APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
           TEAM_ID: ${{ secrets.TEAM_ID }}
+          APP_SCHEMA_NAME: ${{ secrets.APP_SCHEMA_NAME }}
+          APP_ID: ${{secrets.APP_ID}}
       - name: upload app
         run: |
           xcrun altool --upload-app --file $PWD/build/begun.ipa --username vladimir.grigoryan@techflow.studio --password Vlad009277
