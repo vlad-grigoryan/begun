@@ -9,7 +9,7 @@ platform :ios do
 	ENV["XCODE_PROJ"] = "./ios/#{ENV['APP_SCHEMA_NAME']}.xcodeproj"
 	ENV["PLIST"] = "./#{ENV['APP_SCHEMA_NAME']}/Info.plist"
 	ENV["APP_NAME"] = ENV['APP_SCHEMA_NAME']
-	ENV["FASTLANE_PASSWORD"] = "Vlad009277"
+	ENV["FASTLANE_PASSWORD"] = ENV["GIT_PASS"]
   end
 
 	lane :everything do
@@ -55,7 +55,7 @@ platform :ios do
   	)
   	update_project_provisioning(
       xcodeproj: ENV["XCODE_PROJ"],
-      profile: ENV["sigh_#{ENV['APP_SCHEMA_NAME']}_appstore_profile-path"],
+      profile: ENV["sigh_#{ENV['APP_ID']}_appstore_profile-path"],
       target_filter: ENV['APP_SCHEMA_NAME'],
       build_configuration: "Release",
       code_signing_identity: ENV['CODE_SIGN_ID']
@@ -74,7 +74,7 @@ platform :ios do
         export_options: {
            method: "app-store",
            provisioningProfiles: {
-             ENV["APP_ID"] => ENV["sigh_#{ENV['APP_SCHEMA_NAME']}_appstore_profile-name"]
+             ENV["APP_ID"] => ENV["sigh_#{ENV['APP_ID']}_appstore_profile-name"]
            }
         },
         codesigning_identity: ENV['CODE_SIGN_ID']
