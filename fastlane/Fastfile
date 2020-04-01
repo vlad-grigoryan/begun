@@ -9,7 +9,7 @@ platform :ios do
 	ENV["XCODE_PROJ"] = "./ios/#{ENV['APP_SCHEMA_NAME']}.xcodeproj"
 	ENV["PLIST"] = "./#{ENV['APP_SCHEMA_NAME']}/Info.plist"
 	ENV["APP_NAME"] = ENV['APP_SCHEMA_NAME']
-	ENV["FASTLANE_PASSWORD"] = ENV["GIT_PASS"]
+	ENV["FASTLANE_PASSWORD"] = ENV["MATCH_PASSWORD"]
   end
 
 	lane :everything do
